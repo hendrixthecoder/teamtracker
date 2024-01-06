@@ -44,6 +44,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function fullname()
+    {
+        return "$this->first_name $this->last_name";
+    }
+
     public function team()
     {
         return $this->belongsTo(Team::class);
