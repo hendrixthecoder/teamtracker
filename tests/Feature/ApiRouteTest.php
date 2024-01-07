@@ -259,4 +259,15 @@ class ApiRouteTest extends TestCase
         $this->assertDatabaseMissing('projects', ['id' => $this->project->id]);
     }
 
+    public function test_fetch_all_users_endpoint_works()
+    {
+        $response = $this->get("api/v1/users");
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment(
+                ['first_name' => 'John', 'last_name' => 'Doe']
+            );
+    }
+
 }
