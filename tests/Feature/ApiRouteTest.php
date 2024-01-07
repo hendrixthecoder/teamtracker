@@ -290,4 +290,12 @@ class ApiRouteTest extends TestCase
         $this->assertDatabaseHas("users", $requestData);
     }
 
+    public function test_fetch_one_user_endpoint_works()
+    {
+        $response = $this->get("api/v1/users/{$this->user->id}");
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment(['first_name' => 'John', 'last_name' => 'Doe']);
+    }
+
 }
