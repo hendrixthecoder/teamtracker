@@ -1,5 +1,11 @@
 # Project Overview
 
+- [Description](#description)
+- [Models](#models)
+- [API Endpoints](#api-endpoints)
+- [Testing](#testing)
+- [Usage](#usage)
+
 ## Description
 This project is a Laravel-based web application designed to manage teams, projects, and users(members). It provides a RESTful API to perform CRUD (Create, Read, Update, Delete) operations on teams, projects, and users and much more like fetching members of a specific project etc.
 
