@@ -298,4 +298,23 @@ class ApiRouteTest extends TestCase
             ->assertJsonFragment(['first_name' => 'John', 'last_name' => 'Doe']);
     }
 
+    public function test_update_user_endpoint_works()
+    {
+        $requestData = [
+            'first_name' => 'Johnny',
+            'last_name' => 'Doey',
+            'city' => 'Updated City',
+            'state' => 'Updated State',
+            'country' => 'Updated Country',
+        ];
+
+        $response = $this->patch("api/v1/users/{$this->user->id}", $requestData);
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'first_name' => 'Johnny',
+                'last_name' => 'Doey',
+            ]);
+    }
+
 }
