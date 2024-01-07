@@ -317,4 +317,12 @@ class ApiRouteTest extends TestCase
             ]);
     }
 
+    public function test_delete_user_endpoint_works()
+    {
+        $response = $this->delete("api/v1/users/{$this->user->id}");
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('users', ['id' => $this->user->id]);
+    }
+
 }
