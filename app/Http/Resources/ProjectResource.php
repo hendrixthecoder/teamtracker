@@ -18,7 +18,6 @@ class ProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'team' => $this->team->name,
-            'members' => UserResource::collection($this->users)
         ];
     }
 }
