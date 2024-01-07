@@ -11,7 +11,7 @@ class ApiRouteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_update_user_team_with_non_existing_user(): void
+    public function test_throw_error_when_update_user_team_with_non_existing_user(): void
     {
         $userId = 1;
 
@@ -50,5 +50,15 @@ class ApiRouteTest extends TestCase
 
         $team = Team::find(2);
         $this->assertEquals('Dummy Team 2', $team->name);
+    }
+
+    public function test_throw_error_when_fetch_all_team_members_for_non_existing_team(): void
+    {
+        $teamId = 1;
+
+        $response = $this->get("api/v1/teams/{$teamId}/members");
+
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Team not found.']);
     }
 }
