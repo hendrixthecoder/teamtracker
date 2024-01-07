@@ -61,4 +61,34 @@ class ApiRouteTest extends TestCase
         $response->assertStatus(404);
         $response->assertJson(['message' => 'Team not found.']);
     }
+    
+    public function test_fetch_all_team_members_for_existing_team(): void
+    {
+        $team = Team::create([
+            'name' => 'Dummy Team'
+        ]);
+
+        $user = User::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'city' => 'San Bernadino',
+            'state' => 'California',
+            'country' => 'America',
+            'team_id' => $team->id
+        ]);
+
+        $response = $this->get("api/v1/teams/{$team->id}/members");
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'city' => $user->city,
+                'state' => $user->state,
+                'country' => $user->country,
+            ]);
+    }
+
+    
 }

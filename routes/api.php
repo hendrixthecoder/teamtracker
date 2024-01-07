@@ -38,7 +38,7 @@ Route::prefix('v1')->group(function () {
             return response()->json([
                 'message' => 'Team not found.'
             ], 404);
-        });;
+        });
 
     Route::prefix('projects')->group(function () {
         Route::post('/{project}/add_member', AddMemberController::class)
