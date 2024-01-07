@@ -131,7 +131,9 @@ class ApiRouteTest extends TestCase
             'user_id' => $member->id
         ]);
     }
-
+    
+    // ! CHange status code of created endpoints to 201
+    
     // ! TODO: Implement a feature that makes sure a member can only be added to a project that belongs to their team    
     public function test_throw_error_when_try_to_fetch_members_of_non_existing_project()
     {
@@ -140,5 +142,44 @@ class ApiRouteTest extends TestCase
         $response = $this->get("api/v1/projects/{$projectId}/members");
         $response->assertStatus(404);
         $response->assertJson(['message' => 'Project not found.']);
+    }
+
+    public function test_fetch_members_of_existing_project()
+    {
+        $team = Team::create([
+            'name' => 'Dummy Team'
+        ]);
+
+        $member = User::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'city' => 'San Bernadino',
+            'state' => 'California',
+            'country' => 'America',
+            'team_id' => $team->id
+        ]);
+
+        $project = Project::create([
+            'name' => 'Dummy project',
+            'team_id' => $team->id
+        ]);
+
+        $requestData = [
+            'member_id' => $member->id
+        ];
+
+        $response = $this->post("api/v1/projects/{$project->id}/add_member", $requestData);
+        $response->assertStatus(200);
+        
+        $response = $this->get("api/v1/projects/{$project->id}/members");
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'first_name' => $member->first_name,
+                'last_name' => $member->last_name,
+                'city' => $member->city,
+                'state' => $member->state,
+                'country' => $member->country,
+            ]);
     }
 }
