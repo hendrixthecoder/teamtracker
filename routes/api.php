@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AddMemberController;
 use App\Http\Controllers\Api\V1\FetchUserController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TeamController;
@@ -24,4 +25,5 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/users', UserController::class);
     Route::patch('/users/{user}/team', UpdateTeamController::class);
     Route::get('/teams/{team}/members', FetchUserController::class);
+    Route::post('/projects/{project}/add_member', AddMemberController::class);
 });
