@@ -156,15 +156,18 @@ class ApiRouteTest extends TestCase
 
     public function test_create_new_team_endpoint_works()
     {
-        $responseData = [
+        $requestData = [
             'name' => 'New Team'
         ];
         
-        $response = $this->post("api/v1/teams", $responseData);
+        $response = $this->post("api/v1/teams", $requestData);
 
         $response
             ->assertStatus(201)
             ->assertJsonFragment([ "name" => "New Team"]);
+
+        $this->assertDatabaseHas("teams", $requestData);
+
     }
 
     public function test_fetch_one_team_endpoint_works()
@@ -208,6 +211,22 @@ class ApiRouteTest extends TestCase
             ->assertJsonFragment(
                 ['name' => 'Dummy project'],
             );
+    }
+
+    public function test_create_new_project_endpoint_works()
+    {
+        $requestData = [
+            'name' => 'New Project',
+            'team_id' => $this->team->id,
+        ];
+
+        $response = $this->post("api/v1/projects", $requestData);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonFragment(["name" => "New Project"]);
+            
+        $this->assertDatabaseHas("projects", $requestData);
     }
 
 }
