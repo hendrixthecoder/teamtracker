@@ -90,5 +90,14 @@ class ApiRouteTest extends TestCase
             ]);
     }
 
+    public function test_throw_error_when_add_member_to_non_existing_project(): void
+    {
+        $projectId = 1;
+        
+        $response = $this->post("api/v1/projects/{$projectId}/add_member");
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Project not found.']);
+    }
+
     
 }
