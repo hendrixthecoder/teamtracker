@@ -190,4 +190,12 @@ class ApiRouteTest extends TestCase
                 'name' => 'Dummy Team Updated'
             ]);
     }
+
+    public function test_delete_team_endpoint_works()
+    {
+        $response = $this->delete("api/v1/teams/{$this->team->id}");
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('teams', ['id' => $this->team->id]);
+    }
 }
