@@ -270,4 +270,24 @@ class ApiRouteTest extends TestCase
             );
     }
 
+    public function test_create_new_user_endpoint_works()
+    {
+        $requestData = [
+            'first_name' => 'New',
+            'last_name' => 'User',
+            'city' => 'New City',
+            'state' => 'New State',
+            'country' => 'New Country',
+            'team_id' => $this->team->id,
+        ];
+
+        $response = $this->post("api/v1/users", $requestData);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonFragment(['first_name' => 'New', 'last_name' => 'User']);
+
+        $this->assertDatabaseHas("users", $requestData);
+    }
+
 }
