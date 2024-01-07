@@ -137,4 +137,18 @@ class ApiRouteTest extends TestCase
                 'country' => $this->user->country,
             ]);
     }
+
+    public function test_fetch_all_teams_endpoint_works()
+    {
+        $response = $this->get("api/v1/teams");
+        
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment(
+                ['name' => 'Dummy Team'], 
+                ['name' => 'Dummy Team 2']
+            );
+    }
+
+    
 }
