@@ -44,8 +44,9 @@ class ApiRouteTest extends TestCase
 
         $response = $this->patch("api/v1/users/{$userId}/team", $requestData);
 
-        $response->assertStatus(404);
-        $response->assertJson(['message' => 'User not found.']);
+        $response
+            ->assertStatus(404)
+            ->assertJson(['message' => 'User not found.']);
     }
 
     public function test_update_user_team_with_existing_user(): void
@@ -67,8 +68,9 @@ class ApiRouteTest extends TestCase
 
         $response = $this->get("api/v1/teams/{$teamId}/members");
 
-        $response->assertStatus(404);
-        $response->assertJson(['message' => 'Team not found.']);
+        $response
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Team not found.']);
     }
 
     public function test_fetch_all_team_members_for_existing_team(): void
@@ -91,8 +93,9 @@ class ApiRouteTest extends TestCase
         $projectId = 1;
 
         $response = $this->post("api/v1/projects/{$projectId}/add_member");
-        $response->assertStatus(404);
-        $response->assertJson(['message' => 'Project not found.']);
+        $response
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Project not found.']);
     }
 
     public function test_add_member_to_existing_project(): void
@@ -114,8 +117,9 @@ class ApiRouteTest extends TestCase
         $projectId = 1;
 
         $response = $this->get("api/v1/projects/{$projectId}/members");
-        $response->assertStatus(404);
-        $response->assertJson(['message' => 'Project not found.']);
+        $response
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Project not found.']);
     }
 
     public function test_fetch_members_of_existing_project()
@@ -167,9 +171,16 @@ class ApiRouteTest extends TestCase
     {
         $response = $this->get("api/v1/teams/{$this->team->id}");
         $response
-        ->assertStatus(200)
-        ->assertJsonFragment(
-            ["name" => "Dummy Team"]
-        );
+            ->assertStatus(200)
+            ->assertJsonFragment(
+                ["name" => "Dummy Team"]
+            );
+    }
+
+    public function test()
+    {
+        $requestData = [
+            'name' => 'Dummy Team Updated'
+        ];
     }
 }
