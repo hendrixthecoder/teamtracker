@@ -150,5 +150,16 @@ class ApiRouteTest extends TestCase
             );
     }
 
-    
+    public function test_create_new_team_endpoint_works()
+    {
+        $responseData = [
+            'name' => 'New Team'
+        ];
+        
+        $response = $this->post("api/v1/teams", $responseData);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonFragment([ "name" => "New Team"]);
+    }
 }
