@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TeamController;
 use App\Http\Controllers\Api\V1\UpdateTeamController;
 use App\Http\Controllers\Api\V1\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,12 +25,34 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/teams', TeamController::class);
     Route::apiResource('/projects', ProjectController::class);
     Route::apiResource('/users', UserController::class);
-    Route::patch('/users/{user}/team', UpdateTeamController::class);
-    Route::get('/teams/{team}/members', FetchUserController::class);
-    
+
+    Route::patch('/users/{user}/team', UpdateTeamController::class)
+        ->missing(function () {
+            return response()->json([
+                'message' => 'User not found.'
+            ]);
+        });
+
+    Route::get('/teams/{team}/members', FetchUserController::class)
+        ->missing(function () {
+            return response()->json([
+                'message' => 'Team not found.'
+            ]);
+        });;
+
     Route::prefix('projects')->group(function () {
-        Route::post('/{project}/add_member', AddMemberController::class);
-        Route::get('/{project}/members', FetchProjectMembers::class);
+        Route::post('/{project}/add_member', AddMemberController::class)
+            ->missing(function () {
+                return response()->json([
+                    'message' => 'Project not found.'
+                ]);
+            });
+
+        Route::get('/{project}/members', FetchProjectMembers::class)
+            ->missing(function () {
+                return response()->json([
+                    'message' => 'Project not found.'
+                ]);
+            });
     });
-    
 });
