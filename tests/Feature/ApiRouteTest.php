@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -98,6 +99,39 @@ class ApiRouteTest extends TestCase
         $response->assertStatus(404);
         $response->assertJson(['message' => 'Project not found.']);
     }
+    
+    public function test_add_member_to_existing_project(): void
+    {
+        $team = Team::create([
+            'name' => 'Dummy Team'
+        ]);
 
+        $member = User::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'city' => 'San Bernadino',
+            'state' => 'California',
+            'country' => 'America',
+            'team_id' => $team->id
+        ]);
+
+        $project = Project::create([
+            'name' => 'Dummy project',
+            'team_id' => $team->id
+        ]);
+
+        $requestData = [
+            'member_id' => $member->id
+        ];
+        
+        $response = $this->post("api/v1/projects/{$project->id}/add_member", $requestData);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('project_user', [
+            'project_id' => $project->id,
+            'user_id' => $member->id
+        ]);
+    }
+
+    // ! TODO: Implement a feature that makes sure a member can only be added to a project that belongs to their team    
     
 }
