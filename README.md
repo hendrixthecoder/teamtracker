@@ -6,6 +6,21 @@
 - [Testing](#testing)
 - [Usage](#usage)
 
+## Project Setup
+To set up this project after cloning, `cd` into the root directory and run the following commands:
+```
+  cp .env.example .env
+
+  npm install (Optional)
+
+  composer install
+```
+At this point you should have all the necessary dependencies, now set up the .env file by filling the details as required. And then run:
+```
+  php artisan migrate --seed
+```
+Now your database is set up with dummy data and has a database for you to begin querying. Happy hacking, cheers!
+
 ## Description
 This project is a Laravel-based web application designed to manage teams, projects, and users(members). It provides a RESTful API to perform CRUD (Create, Read, Update, Delete) operations on teams, projects, and users and much more like fetching members of a specific project etc.
 
@@ -142,7 +157,7 @@ This project is a Laravel-based web application designed to manage teams, projec
   - Deletes a specific user.
 
 ## Testing
-The project includes PHPUnit tests for various API endpoints, ensuring proper functionality and data consistency.
+The project includes PHPUnit tests for various API endpoints, ensuring proper functionality and data consistency. To run tests go to the root of the directory and run `php artisan test`
 
 ## Usage
 To use the API, make HTTP requests to the specified endpoints using the provided methods (GET, POST, PATCH, DELETE). Ensure proper payload formatting for creation and update operations.
