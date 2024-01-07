@@ -237,4 +237,18 @@ class ApiRouteTest extends TestCase
             ->assertJsonFragment(["name" => "Dummy project"]);
     }
 
+    public function test_update_project_endpoint_works()
+    {
+        $requestData = [
+            'name' => 'Dummy project Updated',
+        ];
+
+        $response = $this->patch("api/v1/projects/{$this->project->id}", $requestData);
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'name' => 'Dummy project Updated',
+            ]);
+    }
+
 }
