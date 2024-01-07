@@ -12,11 +12,37 @@ class ApiRouteTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $team;
+    protected $team2;
+    protected $user;
+    protected $project;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->team = Team::create(['name' => 'Dummy Team']);
+        $this->team2 = Team::create(['name' => 'Dummy Team 2']);
+        $this->user = User::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'city' => 'San Bernadino',
+            'state' => 'California',
+            'country' => 'America',
+            'team_id' => $this->team->id,
+        ]);
+        $this->project = Project::create(['name' => 'Dummy project', 'team_id' => $this->team->id]);
+    }
+
     public function test_throw_error_when_update_user_team_with_non_existing_user(): void
     {
-        $userId = 1;
+        $userId = 200;
 
-        $response = $this->patch("api/v1/users/{$userId}/team");
+        $requestData = [
+            'team_id' => $this->team->id
+        ];
+
+        $response = $this->patch("api/v1/users/{$userId}/team", $requestData);
 
         $response->assertStatus(404);
         $response->assertJson(['message' => 'User not found.']);
@@ -24,33 +50,15 @@ class ApiRouteTest extends TestCase
 
     public function test_update_user_team_with_existing_user(): void
     {
-        Team::create([
-            'name' => 'Dummy Team'
-        ]);
-
-        Team::create([
-            'name' => 'Dummy Team 2'
-        ]);
-
-        $user = User::create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'city' => 'San Bernadino',
-            'state' => 'California',
-            'country' => 'America',
-            'team_id' => 1
-        ]);
-
         $requestData = [
-            'team_id' => 2
+            'team_id' => $this->team2->id
         ];
 
-        $response = $this->patch("api/v1/users/{$user->id}/team", $requestData);
+        $response = $this->patch("api/v1/users/{$this->user->id}/team", $requestData);
 
         $response->assertStatus(200);
 
-        $team = Team::find(2);
-        $this->assertEquals('Dummy Team 2', $team->name);
+        $this->assertEquals('Dummy Team 2', $this->team2->name);
     }
 
     public function test_throw_error_when_fetch_all_team_members_for_non_existing_team(): void
@@ -62,79 +70,45 @@ class ApiRouteTest extends TestCase
         $response->assertStatus(404);
         $response->assertJson(['message' => 'Team not found.']);
     }
-    
+
     public function test_fetch_all_team_members_for_existing_team(): void
     {
-        $team = Team::create([
-            'name' => 'Dummy Team'
-        ]);
-
-        $user = User::create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'city' => 'San Bernadino',
-            'state' => 'California',
-            'country' => 'America',
-            'team_id' => $team->id
-        ]);
-
-        $response = $this->get("api/v1/teams/{$team->id}/members");
+        $response = $this->get("api/v1/teams/{$this->team->id}/members");
 
         $response
             ->assertStatus(200)
             ->assertJsonFragment([
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'city' => $user->city,
-                'state' => $user->state,
-                'country' => $user->country,
+                'first_name' => $this->user->first_name,
+                'last_name' => $this->user->last_name,
+                'city' => $this->user->city,
+                'state' => $this->user->state,
+                'country' => $this->user->country,
             ]);
     }
 
     public function test_throw_error_when_add_member_to_non_existing_project(): void
     {
         $projectId = 1;
-        
+
         $response = $this->post("api/v1/projects/{$projectId}/add_member");
         $response->assertStatus(404);
         $response->assertJson(['message' => 'Project not found.']);
     }
-    
+
     public function test_add_member_to_existing_project(): void
     {
-        $team = Team::create([
-            'name' => 'Dummy Team'
-        ]);
-
-        $member = User::create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'city' => 'San Bernadino',
-            'state' => 'California',
-            'country' => 'America',
-            'team_id' => $team->id
-        ]);
-
-        $project = Project::create([
-            'name' => 'Dummy project',
-            'team_id' => $team->id
-        ]);
-
         $requestData = [
-            'member_id' => $member->id
+            'member_id' => $this->user->id
         ];
-        
-        $response = $this->post("api/v1/projects/{$project->id}/add_member", $requestData);
+
+        $response = $this->post("api/v1/projects/{$this->project->id}/add_member", $requestData);
         $response->assertStatus(200);
         $this->assertDatabaseHas('project_user', [
-            'project_id' => $project->id,
-            'user_id' => $member->id
+            'project_id' => $this->project->id,
+            'user_id' => $this->user->id
         ]);
     }
-    
-    // ! CHange status code of created endpoints to 201
-    
-    // ! TODO: Implement a feature that makes sure a member can only be added to a project that belongs to their team    
+
     public function test_throw_error_when_try_to_fetch_members_of_non_existing_project()
     {
         $projectId = 1;
@@ -146,40 +120,21 @@ class ApiRouteTest extends TestCase
 
     public function test_fetch_members_of_existing_project()
     {
-        $team = Team::create([
-            'name' => 'Dummy Team'
-        ]);
-
-        $member = User::create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'city' => 'San Bernadino',
-            'state' => 'California',
-            'country' => 'America',
-            'team_id' => $team->id
-        ]);
-
-        $project = Project::create([
-            'name' => 'Dummy project',
-            'team_id' => $team->id
-        ]);
-
         $requestData = [
-            'member_id' => $member->id
+            'member_id' => $this->user->id
         ];
 
-        $response = $this->post("api/v1/projects/{$project->id}/add_member", $requestData);
-        $response->assertStatus(200);
-        
-        $response = $this->get("api/v1/projects/{$project->id}/members");
+        $this->post("api/v1/projects/{$this->project->id}/add_member", $requestData);
+
+        $response = $this->get("api/v1/projects/{$this->project->id}/members");
         $response
             ->assertStatus(200)
             ->assertJsonFragment([
-                'first_name' => $member->first_name,
-                'last_name' => $member->last_name,
-                'city' => $member->city,
-                'state' => $member->state,
-                'country' => $member->country,
+                'first_name' => $this->user->first_name,
+                'last_name' => $this->user->last_name,
+                'city' => $this->user->city,
+                'state' => $this->user->state,
+                'country' => $this->user->country,
             ]);
     }
 }
