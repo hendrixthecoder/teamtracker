@@ -251,4 +251,12 @@ class ApiRouteTest extends TestCase
             ]);
     }
 
+    public function test_delete_project_endpoint_works()
+    {
+        $response = $this->delete("api/v1/projects/{$this->project->id}");
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('projects', ['id' => $this->project->id]);
+    }
+
 }
