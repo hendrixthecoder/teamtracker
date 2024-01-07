@@ -133,5 +133,12 @@ class ApiRouteTest extends TestCase
     }
 
     // ! TODO: Implement a feature that makes sure a member can only be added to a project that belongs to their team    
-    
+    public function test_throw_error_when_try_to_fetch_members_of_non_existing_project()
+    {
+        $projectId = 1;
+
+        $response = $this->get("api/v1/projects/{$projectId}/members");
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Project not found.']);
+    }
 }
