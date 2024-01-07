@@ -229,4 +229,12 @@ class ApiRouteTest extends TestCase
         $this->assertDatabaseHas("projects", $requestData);
     }
 
+    public function test_fetch_one_project_endpoint_works()
+    {
+        $response = $this->get("api/v1/projects/{$this->project->id}");
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment(["name" => "Dummy project"]);
+    }
+
 }
