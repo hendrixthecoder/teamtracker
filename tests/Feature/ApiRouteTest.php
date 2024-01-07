@@ -162,4 +162,14 @@ class ApiRouteTest extends TestCase
             ->assertStatus(201)
             ->assertJsonFragment([ "name" => "New Team"]);
     }
+
+    public function test_fetch_one_team_endpoint_works()
+    {
+        $response = $this->get("api/v1/teams/{$this->team->id}");
+        $response
+        ->assertStatus(200)
+        ->assertJsonFragment(
+            ["name" => "Dummy Team"]
+        );
+    }
 }
