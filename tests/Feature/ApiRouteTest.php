@@ -177,10 +177,17 @@ class ApiRouteTest extends TestCase
             );
     }
 
-    public function test()
+    public function test_update_endpoint_works()
     {
         $requestData = [
             'name' => 'Dummy Team Updated'
         ];
+
+        $response = $this->patch("api/v1/teams/{$this->team->id}", $requestData);
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'name' => 'Dummy Team Updated'
+            ]);
     }
 }
