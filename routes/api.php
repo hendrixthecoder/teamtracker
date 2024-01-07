@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TeamController;
+use App\Http\Controllers\Api\V1\UpdateTeamController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,5 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/teams', TeamController::class);
     Route::apiResource('/projects', ProjectController::class);
     Route::apiResource('/users', UserController::class);
+    Route::patch('/users/{user}/team', UpdateTeamController::class);
 });
