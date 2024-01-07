@@ -30,14 +30,14 @@ Route::prefix('v1')->group(function () {
         ->missing(function () {
             return response()->json([
                 'message' => 'User not found.'
-            ]);
+            ], 404);
         });
 
     Route::get('/teams/{team}/members', FetchUserController::class)
         ->missing(function () {
             return response()->json([
                 'message' => 'Team not found.'
-            ]);
+            ], 404);
         });;
 
     Route::prefix('projects')->group(function () {
@@ -45,14 +45,14 @@ Route::prefix('v1')->group(function () {
             ->missing(function () {
                 return response()->json([
                     'message' => 'Project not found.'
-                ]);
+                ], 404);
             });
 
         Route::get('/{project}/members', FetchProjectMembers::class)
             ->missing(function () {
                 return response()->json([
                     'message' => 'Project not found.'
-                ]);
+                ], 404);
             });
     });
 });
