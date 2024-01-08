@@ -17,5 +17,10 @@ class ProjectSeeder extends Seeder
             'name' => 'UI Updates',
             'team_id' => 1
         ]);
+        
+        Project::create([
+            'name' => 'UI Updates Team 2',
+            'team_id' => 2
+        ]);
     }
 }

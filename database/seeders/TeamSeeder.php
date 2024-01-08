@@ -16,5 +16,9 @@ class TeamSeeder extends Seeder
         Team::create([
             'name' => 'Design Team'
         ]);
+        
+        Team::create([
+            'name' => 'Design Team 2'
+        ]);
     }
 }
