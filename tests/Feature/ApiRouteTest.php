@@ -16,6 +16,7 @@ class ApiRouteTest extends TestCase
     protected $team2;
     protected $user;
     protected $project;
+    protected $project2;
 
     public function setUp(): void
     {
@@ -31,7 +32,9 @@ class ApiRouteTest extends TestCase
             'country' => 'America',
             'team_id' => $this->team->id,
         ]);
+        
         $this->project = Project::create(['name' => 'Dummy project', 'team_id' => $this->team->id]);
+        $this->project2 = Project::create(['name' => 'Dummy projectb2', 'team_id' => $this->team2->id]);
     }
 
     public function test_throw_error_when_update_user_team_with_non_existing_user(): void
@@ -268,6 +271,21 @@ class ApiRouteTest extends TestCase
             ->assertJsonFragment(
                 ['first_name' => 'John', 'last_name' => 'Doe']
             );
+    }
+
+    public function test_throw_error_when_trying_to_join_project_not_for_member_team()
+    {
+        $requestData = [
+            'member_id' => $this->user->id
+        ];
+
+        $response = $this->post("api/v1/projects/{$this->team2->id}/add_member", $requestData);
+        $response
+            ->assertStatus(403)
+            ->assertJson([
+                'message' => 'Project is not for member\'s team.'
+            ]);
+        
     }
 
     public function test_create_new_user_endpoint_works()

@@ -15,6 +15,8 @@ class AddMemberController extends Controller
     public function __invoke(AddMemberRequest $request, Project $project)
     {
         $user = User::find($request->member_id);
+        
+        // Check if project belongs to user's team
         if($user->team->id != $project->team->id){
             return response()->json(['message' => 'Project is not for member\'s team.'], 403);
         }
